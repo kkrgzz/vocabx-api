@@ -1,50 +1,44 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\translation;
-use App\Http\Requests\StoretranslationRequest;
-use App\Http\Requests\UpdatetranslationRequest;
+use App\Models\Translation;
+use App\Http\Requests\StoreTranslationRequest;
+use App\Http\Requests\UpdateTranslationRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class TranslationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $translations = Translation::with(['word', 'language'])->get();
+        return response()->json($translations);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoretranslationRequest $request)
+    public function store(StoreTranslationRequest $request): JsonResponse
     {
-        //
+        $validated = $request->validated();
+        $translation = Translation::create($validated);
+        
+        return response()->json($translation->load(['word', 'language']), Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(translation $translation)
+    public function show(Translation $translation): JsonResponse
     {
-        //
+        return response()->json($translation->load(['word', 'language']));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatetranslationRequest $request, translation $translation)
+    public function update(UpdateTranslationRequest $request, Translation $translation): JsonResponse
     {
-        //
+        $validated = $request->validated();
+        $translation->update($validated);
+        
+        return response()->json($translation->load(['word', 'language']));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(translation $translation)
+    public function destroy(Translation $translation): JsonResponse
     {
-        //
+        $translation->delete();
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -9,4 +9,14 @@ class sentence extends Model
 {
     /** @use HasFactory<\Database\Factories\SentenceFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'word_id',
+        'sentence',
+    ];
+
+    public function word()
+    {
+        return $this->belongsTo(word::class);
+    }
 }

@@ -2,49 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\sentence;
-use App\Http\Requests\StoresentenceRequest;
-use App\Http\Requests\UpdatesentenceRequest;
+use App\Models\Sentence;
+use App\Http\Requests\StoreSentenceRequest;
+use App\Http\Requests\UpdateSentenceRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class SentenceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $sentences = Sentence::with('word')->get();
+        return response()->json($sentences);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoresentenceRequest $request)
+    public function store(StoreSentenceRequest $request): JsonResponse
     {
-        //
+        $validated = $request->validated();
+        $sentence = Sentence::create($validated);
+        
+        return response()->json($sentence, Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(sentence $sentence)
+    public function show(Sentence $sentence): JsonResponse
     {
-        //
+        return response()->json($sentence->load('word'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatesentenceRequest $request, sentence $sentence)
+    public function update(UpdateSentenceRequest $request, Sentence $sentence): JsonResponse
     {
-        //
+        $validated = $request->validated();
+        $sentence->update($validated);
+        
+        return response()->json($sentence);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(sentence $sentence)
+    public function destroy(Sentence $sentence): JsonResponse
     {
-        //
+        $sentence->delete();
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -2,49 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\word;
-use App\Http\Requests\StorewordRequest;
-use App\Http\Requests\UpdatewordRequest;
+use App\Models\Word;
+use App\Http\Requests\StoreWordRequest;
+use App\Http\Requests\UpdateWordRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class WordController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $words = Word::with(['translations'])->get();
+        return response()->json($words);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StorewordRequest $request)
+    public function store(StoreWordRequest $request): JsonResponse
     {
-        //
+        $validated = $request->validated();
+        $word = Word::create($validated);
+        
+        return response()->json($word, Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(word $word)
+    public function show(Word $word): JsonResponse
     {
-        //
+        return response()->json($word);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatewordRequest $request, word $word)
+    public function update(UpdateWordRequest $request, Word $word): JsonResponse
     {
-        //
+        $validated = $request->validated();
+        $word->update($validated);
+        
+        return response()->json($word);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(word $word)
+    public function destroy(Word $word): JsonResponse
     {
-        //
+        $word->delete();
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

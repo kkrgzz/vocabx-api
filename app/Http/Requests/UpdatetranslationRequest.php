@@ -6,23 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatetranslationRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'word_id' => 'sometimes|exists:words,id',
+            'language_code' => 'sometimes|exists:languages,code',
+            'translation' => 'sometimes|string|max:255'
         ];
     }
 }
