@@ -64,7 +64,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $user = Auth::user()->load('roles.translations');
+        $user = Auth::user()->get();
         
         return response()->json([
             'user' => $user,
