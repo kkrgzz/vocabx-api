@@ -5,14 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Word;
 use App\Http\Requests\StoreWordRequest;
 use App\Http\Requests\UpdateWordRequest;
+use App\Models\translation;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class WordController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $words = Word::with(['translations'])->get();
+        $perPage = 10;
+        $validated = $request->validate([
+            'perPage' => 'sometimes|integer|min:1',
+        ]);
+        if ($request->has('perPage')) {
+            $perPage = $validated['perPage'];
+        }
+
+        $words = Word::with(['translations', 'language', 'sentences'])->paginate($perPage);
         return response()->json($words);
     }
 
@@ -20,8 +30,15 @@ class WordController extends Controller
     {
         $validated = $request->validated();
         $word = Word::create($validated);
-        
-        return response()->json($word, Response::HTTP_CREATED);
+    
+        if ($request->has('translations')) {
+            foreach ($request->input('translations') as $translationData) {
+                $translationData['word_id'] = $word->id;
+                translation::create($translationData);
+            }
+        }
+    
+        return response()->json($word->load('translations'), Response::HTTP_CREATED);
     }
 
     public function show(Word $word): JsonResponse
@@ -33,8 +50,22 @@ class WordController extends Controller
     {
         $validated = $request->validated();
         $word->update($validated);
-        
-        return response()->json($word);
+    
+        if ($request->has('translations')) {
+            foreach ($request->input('translations') as $translationData) {
+                $translation = Translation::updateOrCreate(
+                    [
+                        'word_id' => $word->id,
+                        'language_code' => $translationData['language_code']
+                    ],
+                    [
+                        'translation' => $translationData['translation']
+                    ]
+                );
+            }
+        }
+    
+        return response()->json($word->load('translations'));
     }
 
     public function destroy(Word $word): JsonResponse

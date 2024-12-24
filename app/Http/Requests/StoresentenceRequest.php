@@ -14,8 +14,11 @@ class StoresentenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'word_id' => 'required|exists:words,id',
-            'sentence' => 'required|string|max:1000'
+            'word_id' => 'required_without:sentences|exists:words,id',
+            'sentence' => 'required_without:sentences|string|max:1000',
+            'sentences' => 'sometimes|array',
+            'sentences.*.word_id' => 'required_with:sentences|exists:words,id',
+            'sentences.*.sentence' => 'required_with:sentences|string|max:1000',
         ];
     }
 }

@@ -15,7 +15,10 @@ class UpdatewordRequest extends FormRequest
     {
         return [
             'language_code' => 'sometimes|string|exists:languages,code',
-            'word' => 'sometimes|string|max:255'
+            'word' => 'sometimes|string|max:255',
+            'translations' => 'sometimes|array',
+            'translations.*.language_code' => 'required_with:translations|string|exists:languages,code',
+            'translations.*.translation' => 'required_with:translations|string|max:255',
         ];
     }
 }

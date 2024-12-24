@@ -19,9 +19,17 @@ class SentenceController extends Controller
     public function store(StoreSentenceRequest $request): JsonResponse
     {
         $validated = $request->validated();
-        $sentence = Sentence::create($validated);
-        
-        return response()->json($sentence, Response::HTTP_CREATED);
+        $sentences = [];
+    
+        if ($request->has('sentences')) {
+            foreach ($request->input('sentences') as $sentenceData) {
+                $sentences[] = Sentence::create($sentenceData);
+            }
+        } else {
+            $sentences[] = Sentence::create($validated);
+        }
+    
+        return response()->json($sentences, Response::HTTP_CREATED);
     }
 
     public function show(Sentence $sentence): JsonResponse
