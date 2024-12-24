@@ -27,6 +27,7 @@ Route::middleware(['middleware' => 'api', 'auth:api'])->group(function () {
     Route::apiResource('languages', LanguageController::class);
 
     // Word routes
+    Route::get('user/words', [WordController::class, 'userWords']);
     Route::apiResource('words', WordController::class);
     
     // Sentence routes

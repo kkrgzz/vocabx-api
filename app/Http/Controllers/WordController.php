@@ -9,6 +9,7 @@ use App\Models\translation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class WordController extends Controller
 {
@@ -26,18 +27,37 @@ class WordController extends Controller
         return response()->json($words);
     }
 
+    public function userWords(Request $request): JsonResponse
+    {
+        $perPage = 10;
+        $validated = $request->validate([
+            'perPage' => 'sometimes|integer|min:1',
+        ]);
+        if ($request->has('perPage')) {
+            $perPage = $validated['perPage'];
+        }
+
+        $userId = Auth::id();
+        $words = Word::where('user_id', $userId)
+            ->with(['translations', 'language', 'sentences'])
+            ->paginate($perPage);
+
+        return response()->json($words);
+    }
+
     public function store(StoreWordRequest $request): JsonResponse
     {
         $validated = $request->validated();
+        $validated['user_id'] = Auth::id();
         $word = Word::create($validated);
-    
+
         if ($request->has('translations')) {
             foreach ($request->input('translations') as $translationData) {
                 $translationData['word_id'] = $word->id;
                 translation::create($translationData);
             }
         }
-    
+
         return response()->json($word->load('translations'), Response::HTTP_CREATED);
     }
 
@@ -50,7 +70,7 @@ class WordController extends Controller
     {
         $validated = $request->validated();
         $word->update($validated);
-    
+
         if ($request->has('translations')) {
             foreach ($request->input('translations') as $translationData) {
                 $translation = Translation::updateOrCreate(
@@ -64,7 +84,7 @@ class WordController extends Controller
                 );
             }
         }
-    
+
         return response()->json($word->load('translations'));
     }
 
