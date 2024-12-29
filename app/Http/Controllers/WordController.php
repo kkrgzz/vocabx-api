@@ -18,12 +18,18 @@ class WordController extends Controller
         $perPage = 10;
         $validated = $request->validate([
             'perPage' => 'sometimes|integer|min:1',
+            'sort' => 'sometimes|in:asc,desc',
         ]);
         if ($request->has('perPage')) {
             $perPage = $validated['perPage'];
         }
 
-        $words = Word::with(['translations', 'language', 'sentences'])->paginate($perPage);
+        $sortOrder = $request->input('sort', 'asc');
+        
+        $words = Word::with(['translations', 'language', 'sentences'])
+            ->orderBy('created_at', $sortOrder)
+            ->paginate($perPage);
+
         return response()->json($words);
     }
 
@@ -32,14 +38,18 @@ class WordController extends Controller
         $perPage = 10;
         $validated = $request->validate([
             'perPage' => 'sometimes|integer|min:1',
+            'sort' => 'sometimes|in:asc,desc',
         ]);
         if ($request->has('perPage')) {
             $perPage = $validated['perPage'];
         }
 
+        $sortOrder = $request->input('sort', 'asc');
+
         $userId = Auth::id();
         $words = Word::where('user_id', $userId)
             ->with(['translations', 'language', 'sentences'])
+            ->orderBy('created_at', $sortOrder)
             ->paginate($perPage);
 
         return response()->json($words);
