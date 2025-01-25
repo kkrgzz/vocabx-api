@@ -33,10 +33,13 @@ Route::middleware(['middleware' => 'api', 'auth:api'])->group(function () {
     // Word routes
     Route::get('user/words', [WordController::class, 'userWords']);
     Route::apiResource('words', WordController::class);
-    
-    // Sentence routes
-    Route::apiResource('sentences', SentenceController::class);
 
     // Translation routes
+    Route::post('translations/bulk', [TranslationController::class, 'bulkStore']);
+    Route::put('translations/bulk', [TranslationController::class, 'bulkUpdate']);
     Route::apiResource('translations', TranslationController::class);
+
+    // Sentence routes
+    Route::put('sentences/bulk', [SentenceController::class, 'bulkUpdate']);
+    Route::apiResource('sentences', SentenceController::class);
 });

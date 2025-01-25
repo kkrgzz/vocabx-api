@@ -14,8 +14,10 @@ class UpdatesentenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'word_id' => 'sometimes|exists:words,id',
-            'sentence' => 'sometimes|string|max:1000'
+            'sentence' => 'required_without:sentences|string|max:1000',
+            'sentences' => 'sometimes|array',
+            'sentences.*.id' => 'required_with:sentences|exists:sentences,id',
+            'sentences.*.sentence' => 'required_with:sentences|string|max:1000'
         ];
     }
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('language_code')
                 ->references('code')
                 ->on('languages')
-                ->onDelete('no action');
+                ->onDelete('cascade');
 
 
             // Add index for faster word searches

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Translation;
@@ -19,8 +20,21 @@ class TranslationController extends Controller
     {
         $validated = $request->validated();
         $translation = Translation::create($validated);
-        
+
         return response()->json($translation->load(['word', 'language']), Response::HTTP_CREATED);
+    }
+
+    public function bulkStore(StoreTranslationRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $createdTranslations = [];
+
+        foreach ($request->input('translations') as $translationData) {
+            $translation = Translation::create($translationData);
+            $createdTranslations[] = $translation->load(['word', 'language']);
+        }
+
+        return response()->json($createdTranslations, Response::HTTP_CREATED);
     }
 
     public function show(Translation $translation): JsonResponse
@@ -32,8 +46,29 @@ class TranslationController extends Controller
     {
         $validated = $request->validated();
         $translation->update($validated);
-        
+
         return response()->json($translation->load(['word', 'language']));
+    }
+
+    public function bulkUpdate(UpdateTranslationRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $updatedTranslations = [];
+
+        foreach ($request->input('translations') as $translationData) {
+            $translation = Translation::updateOrCreate(
+                [
+                    'word_id' => $translationData['word_id'],
+                    'language_code' => $translationData['language_code']
+                ],
+                [
+                    'translation' => $translationData['translation']
+                ]
+            );
+            $updatedTranslations[] = $translation;
+        }
+
+        return response()->json($updatedTranslations);
     }
 
     public function destroy(Translation $translation): JsonResponse

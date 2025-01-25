@@ -48,7 +48,7 @@ class WordController extends Controller
 
         $userId = Auth::id();
         $words = Word::where('user_id', $userId)
-            ->with(['translations', 'language', 'sentences'])
+            ->with(['translations.language', 'language', 'sentences'])
             ->orderBy('created_at', $sortOrder)
             ->paginate($perPage);
 

@@ -14,9 +14,13 @@ class StoretranslationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'word_id' => 'required|exists:words,id',
-            'language_code' => 'required|exists:languages,code',
-            'translation' => 'required|string|max:255'
+            'translations' => 'sometimes|array',
+            'translations.*.word_id' => 'required_with:translations|exists:words,id',
+            'translations.*.language_code' => 'required_with:translations|exists:languages,code',
+            'translations.*.translation' => 'required_with:translations|string|max:255',
+            'word_id' => 'required_without:translations|exists:words,id',
+            'language_code' => 'required_without:translations|exists:languages,code',
+            'translation' => 'required_without:translations|string|max:255'
         ];
     }
 }

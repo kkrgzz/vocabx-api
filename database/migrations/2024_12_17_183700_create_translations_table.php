@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('translations', function (Blueprint $table) {
             $table->id();
-            $table->string('word_id')->constrained()->onDelete('no action');
+            $table->string('word_id')->constrained()->onDelete('cascade');
             $table->string('language_code');
             $table->text('translation');
             $table->timestamps();
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('language_code')
                 ->references('code')
                 ->on('languages')
-                ->onDelete('no action');
+                ->onDelete('cascade');
         });
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sentences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('word_id')->constrained()->onDelete('no action');
+            $table->foreignId('word_id')->constrained()->onDelete('cascade');
             $table->text('sentence');
             $table->timestamps();
 
