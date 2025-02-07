@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\WordController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -20,8 +21,12 @@ Route::group([
 });
 
 Route::group([
-    'middleware'=>'api',
+    'middleware' => 'api',
 ], function () {
     // Language routes
     Route::apiResource('languages', LanguageController::class);
+
+    // Word routes
+    Route::get('user/words', [WordController::class, 'userWords']);
+    Route::apiResource('words', WordController::class);
 });

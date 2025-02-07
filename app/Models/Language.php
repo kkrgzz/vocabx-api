@@ -18,4 +18,9 @@ class Language extends Model
         'code',
         'name',
     ];
+
+    public function words()
+    {
+        return $this->hasMany(Word::class);
+    }
 }
