@@ -30,4 +30,9 @@ class Word extends Model
     {
         return $this->hasMany(Translation::class);
     }
+
+    public function sentences()
+    {
+        return $this->hasMany(Sentence::class);
+    }
 }
