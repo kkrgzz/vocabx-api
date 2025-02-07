@@ -16,8 +16,14 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test@kkaragoz.com',
+            'password' => 'password',
         ]);
+
+        //call language seeder
+        $this->call(LanguageSeeder::class);
+        $this->call(WordSeeder::class);
+        $this->call(TranslationSeeder::class);
+        $this->call(SentenceSeeder::class);
     }
 }
