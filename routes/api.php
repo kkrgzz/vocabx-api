@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -17,4 +17,11 @@ Route::group([
         Route::post('refresh', [AuthController::class, 'refresh'])->name('refresh');
         Route::post('me', [AuthController::class, 'me'])->name('me');
     });
+});
+
+Route::group([
+    'middleware'=>'api',
+], function () {
+    // Language routes
+    Route::apiResource('languages', LanguageController::class);
 });
