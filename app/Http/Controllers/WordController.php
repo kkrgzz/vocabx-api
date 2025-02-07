@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Word;
 use App\Http\Requests\StoreWordRequest;
 use App\Http\Requests\UpdateWordRequest;
+use App\Models\Translation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -70,7 +71,7 @@ class WordController extends Controller
         if ($request->has('translations')) {
             foreach ($request->input('translations') as $translationData) {
                 $translationData['word_id'] = $word->id;
-                translation::create($translationData);
+                Translation::create($translationData);
             }
         }
 

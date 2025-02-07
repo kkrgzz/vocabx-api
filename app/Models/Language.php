@@ -23,4 +23,9 @@ class Language extends Model
     {
         return $this->hasMany(Word::class);
     }
+
+    public function translations()
+    {
+        return $this->hasMany(Translation::class);
+    }
 }

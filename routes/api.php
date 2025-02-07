@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\TranslationController;
 use App\Http\Controllers\WordController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,4 +30,9 @@ Route::group([
     // Word routes
     Route::get('user/words', [WordController::class, 'userWords']);
     Route::apiResource('words', WordController::class);
+
+    // Translation routes
+    Route::post('translations/bulk', [TranslationController::class, 'bulkStore']);
+    Route::put('translations/bulk', [TranslationController::class, 'bulkUpdate']);
+    Route::apiResource('translations', TranslationController::class);
 });

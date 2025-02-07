@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateWordRequest extends FormRequest
+class UpdateTranslationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,13 @@ class UpdateWordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'language_code' => 'sometimes|string|exists:languages,code',
-            'word' => 'sometimes|string|max:255',
             'translations' => 'sometimes|array',
-            'translations.*.language_code' => 'required_with:translations|string|exists:languages,code',
+            'translations.*.word_id' => 'required_with:translations|exists:words,id',
+            'translations.*.language_code' => 'required_with:translations|exists:languages,code',
             'translations.*.translation' => 'required_with:translations|string|max:255',
+            'word_id' => 'required_without:translations|exists:words,id',
+            'language_code' => 'required_without:translations|exists:languages,code',
+            'translation' => 'required_without:translations|string|max:255',
         ];
     }
 }

@@ -25,4 +25,9 @@ class Word extends Model
     {
         return $this->belongsTo(language::class, 'language_code');
     }
+
+    public function translations()
+    {
+        return $this->hasMany(Translation::class);
+    }
 }
