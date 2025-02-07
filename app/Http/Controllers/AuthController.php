@@ -8,23 +8,15 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    /**
+     *  TUTORIAL DOCUMENT: https://www.binaryboxtuts.com/php-tutorials/laravel-11-json-web-tokenjwt-authentication/
+     */
 
     /**
-     * Get a JWT via given credentials.
+     * Register a User.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
-    {
-        $credentials = request(['email', 'password']);
-
-        if (! $token = Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        return $this->respondWithToken($token);
-    }
-
     public function register()
     {
         $validator = Validator::make(request()->all(), [
@@ -46,6 +38,23 @@ class AuthController extends Controller
         return response()->json($user, 201);
     }
 
+
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login()
+    {
+        $credentials = request(['email', 'password']);
+
+        if (! $token = Auth::attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return $this->respondWithToken($token);
+    }
+
     /**
      * Get the authenticated User.
      *
@@ -53,7 +62,11 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(Auth::user());
+        $user = Auth::user()->get();
+
+        return response()->json([
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -87,10 +100,13 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $user = Auth::user();
+
         return response()->json([
-            'access_token' => $token,
+            'serviceToken' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
+            'expires_in' => Auth::factory()->getTTL() * 60,
+            'user' => $user,
         ]);
     }
 }
