@@ -71,4 +71,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Word::class);
     }
+
+    public function moods()
+    {
+        return $this->hasMany(Mood::class);
+    }
 }

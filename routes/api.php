@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\MoodController;
 use App\Http\Controllers\SentenceController;
 use App\Http\Controllers\TranslationController;
 use App\Http\Controllers\WordController;
@@ -38,4 +39,7 @@ Route::middleware(['middleware' => 'api', 'auth:api'])->group(function () {
     // Sentence routes
     Route::put('sentences/bulk', [SentenceController::class, 'bulkUpdate']);
     Route::apiResource('sentences', SentenceController::class);
+
+    // Mood Routes
+    Route::apiResource('moods', MoodController::class);
 });
