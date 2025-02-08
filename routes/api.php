@@ -41,5 +41,6 @@ Route::middleware(['middleware' => 'api', 'auth:api'])->group(function () {
     Route::apiResource('sentences', SentenceController::class);
 
     // Mood Routes
+    Route::get('moods/latest', [MoodController::class, 'latestMoods']);
     Route::apiResource('moods', MoodController::class);
 });

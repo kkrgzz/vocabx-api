@@ -6,6 +6,7 @@ use App\Models\Mood;
 use App\Http\Requests\StoreMoodRequest;
 use App\Http\Requests\UpdateMoodRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,6 +35,22 @@ class MoodController extends Controller
         return response()->json($mood);
     }
 
+    public function latestMoods(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'count' => 'sometimes|integer|min:1',
+        ]);
+
+        $count = $validated['count'] ?? 6; // Default to 5 if not provided
+
+        $moods = Mood::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->take($count)
+            ->get();
+
+        return response()->json($moods);
+    }
+    
     public function update(UpdateMoodRequest $request, Mood $mood): JsonResponse
     {
         $validated = $request->validated();
