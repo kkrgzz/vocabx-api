@@ -76,4 +76,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Mood::class);
     }
+
+    public function todoCategories()
+    {
+        return $this->hasMany(TodoCategory::class);
+    }
 }
