@@ -5,6 +5,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MoodController;
 use App\Http\Controllers\SentenceController;
 use App\Http\Controllers\TodoCategoryController;
+use App\Http\Controllers\TodoController;
 use App\Http\Controllers\TranslationController;
 use App\Http\Controllers\WordController;
 use Illuminate\Support\Facades\Route;
@@ -47,4 +48,7 @@ Route::middleware(['middleware' => 'api', 'auth:api'])->group(function () {
 
     // Todo Category Routes
     Route::apiResource('todo-categories', TodoCategoryController::class);
+
+    // Todo Routes
+    Route::apiResource('todos', TodoController::class);
 });
