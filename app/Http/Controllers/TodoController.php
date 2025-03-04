@@ -21,6 +21,8 @@ class TodoController extends Controller
         $validated = $request->validate([
             'perPage' => 'sometimes|integer|min:1',
             'sort' => 'sometimes|in:asc,desc',
+            'category_id' => 'sometimes|integer|exists:todo_categories,id',
+            'status' => 'sometimes|string',
         ]);
         if ($request->has('perPage')) {
             $perPage = $validated['perPage'];
@@ -29,10 +31,19 @@ class TodoController extends Controller
         $sortOrder = $request->input('sort', 'asc');
         $userId = Auth::id();
 
-        $todos = Todo::where('user_id', $userId)
+        $query = Todo::where('user_id', $userId)
             ->with(['category'])
-            ->orderBy('created_at', $sortOrder)
-            ->paginate($perPage);
+            ->orderBy('created_at', $sortOrder);
+
+        if ($request->has('category_id')) {
+            $query->where('category_id', $validated['category_id']);
+        }
+
+        if ($request->has('status')) {
+            $query->where('status', $validated['status']);
+        }
+
+        $todos = $query->paginate($perPage);
 
         return response()->json($todos);
     }
