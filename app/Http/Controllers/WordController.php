@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Word;
 use App\Http\Requests\StoreWordRequest;
 use App\Http\Requests\UpdateWordRequest;
+use App\Models\Sentence;
 use App\Models\Translation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class WordController extends Controller
 {
@@ -81,6 +83,89 @@ class WordController extends Controller
     public function show(Word $word): JsonResponse
     {
         return response()->json($word);
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        $userId = Auth::id();
+        $words = Word::where('user_id', $userId)
+            ->with(['translations.language', 'language', 'sentences'])
+            ->get();
+
+        $callback = function () use ($words) {
+            $file = fopen('php://output', 'w');
+            fwrite($file, json_encode($words, JSON_PRETTY_PRINT));
+            fclose($file);
+        };
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="words.json"',
+        ];
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function import(Request $request): JsonResponse
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:json',
+        ]);
+
+        $file = $request->file('file');
+        $data = json_decode(file_get_contents($file->getRealPath()), true);
+
+        $importedCount = 0;
+        $duplicateCount = 0;
+        $errorCount = 0;
+        $passedCount = 0;
+
+        foreach ($data as $wordData) {
+            try {
+                $wordData['user_id'] = Auth::id();
+                $translations = $wordData['translations'] ?? [];
+                $sentences = $wordData['sentences'] ?? [];
+
+                unset($wordData['translations'], $wordData['sentences']);
+
+                // Check for duplicate word
+                $existingWord = Word::where('user_id', $wordData['user_id'])
+                    ->where('word', $wordData['word'])
+                    ->where('language_code', $wordData['language_code'])
+                    ->first();
+
+                if ($existingWord) {
+                    $duplicateCount++;
+                    continue;
+                }
+
+                $word = Word::create($wordData);
+                $importedCount++;
+
+                foreach ($translations as $translationData) {
+                    $translationData['word_id'] = $word->id;
+                    Translation::create($translationData);
+                }
+
+                foreach ($sentences as $sentenceData) {
+                    $sentenceData['word_id'] = $word->id;
+                    Sentence::create($sentenceData);
+                }
+            } catch (\Exception $e) {
+                $errorCount++;
+                continue;
+            }
+        }
+
+        $passedCount = count($data) - ($importedCount + $duplicateCount + $errorCount);
+
+        return response()->json([
+            'message' => 'Import process completed',
+            'imported' => $importedCount,
+            'duplicates' => $duplicateCount,
+            'errors' => $errorCount,
+            'passed' => $passedCount,
+        ], Response::HTTP_CREATED);
     }
 
     public function update(UpdateWordRequest $request, Word $word): JsonResponse

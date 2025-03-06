@@ -31,6 +31,8 @@ Route::middleware(['middleware' => 'api', 'auth:api'])->group(function () {
 
     // Word routes
     Route::get('user/words', [WordController::class, 'userWords']);
+    Route::get('words/export', [WordController::class, 'export'])->name('words.export');
+    Route::post('words/import', [WordController::class, 'import'])->name('words.import');
     Route::apiResource('words', WordController::class);
 
     // Translation routes
