@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserProfile;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,10 +19,10 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register()
+    public function register(): JsonResponse
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
+            'username' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
         ]);
@@ -29,11 +31,28 @@ class AuthController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $user = new User;
-        $user->name = request()->name;
-        $user->email = request()->email;
-        $user->password = bcrypt(request()->password);
-        $user->save();
+        $user = User::create([
+            'username' => request()->username,
+            'email' => request()->email,
+            'password' => bcrypt(request()->password),
+        ]);
+
+        // $user = new User;
+        // $user->name = request()->name;
+        // $user->email = request()->email;
+        // $user->password = bcrypt(request()->password);
+        // $user->save();
+
+        UserProfile::create([
+            'user_id' => $user->id,
+            'first_name' => null,
+            'last_name' => null,
+            'profile_image' => null,
+            'mother_language' => null,
+            'target_language' => null,
+            'api_key' => null,
+            'preferred_model_id' => null,
+        ]);
 
         return response()->json($user, 201);
     }
@@ -62,7 +81,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $user = Auth::user()->get();
+        $user = Auth::user();
 
         return response()->json([
             'user' => $user,
