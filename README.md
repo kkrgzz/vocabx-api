@@ -15,6 +15,7 @@
 - PHP 8.0+
 - Composer
 - MySQL/MariaDB
+- JWT requirements installed (php-jwt dependency)
 
 ---
 
