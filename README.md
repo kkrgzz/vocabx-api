@@ -91,6 +91,10 @@ php artisan migrate:fresh --seed
 php artisan serve
 ```
 
+### 8. Default Login Credentials
+email: test@kkaragoz.com  
+password: password
+
 ---
 
 ## Additional Configuration
