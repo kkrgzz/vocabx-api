@@ -57,12 +57,7 @@ php artisan jwt:secret
 ```
 
 ### 4. Database Setup
-Create database (if not existing):
-```bash
-php artisan db:create  # If using Laravel 8+
-```
-
-Run migrations:
+Create database (if not existing) & Run migrations:
 ```bash
 php artisan migrate
 ```
