@@ -81,7 +81,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('profile');
 
         return response()->json([
             'user' => $user,
