@@ -7,6 +7,58 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Installation Steps
+```bash
+composer install
+```
+
+Create `.env` file:
+```bash
+cp .env.example .env
+```
+Edit the `.env` file and setup the MySQL connection:
+```bash
+vim .env
+```
+Edit the App URL and port:
+```yaml
+    ...
+    APP_URL=http://localhost:8000
+    ....
+```
+Edit the MySQL configs
+```yaml
+    ...
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=vocabx_api
+    DB_USERNAME=<USERNAME>
+    DB_PASSWORD=<PASSWORD>
+    ...
+```
+Generate secret key:
+```bash
+php artisan key:generate
+```
+
+Generate JWT Token secret key:
+```bash
+php artisan jwt:secret
+```
+
+Create symbolic link:
+```bash
+php artisan storage:link
+```
+
+It's done! Now run the app:
+```bash
+php artisan serve
+```
+
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
