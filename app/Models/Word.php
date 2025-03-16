@@ -23,7 +23,7 @@ class Word extends Model
 
     public function language()
     {
-        return $this->belongsTo(language::class, 'language_code');
+        return $this->belongsTo(Language::class, 'language_code');
     }
 
     public function translations()
