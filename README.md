@@ -7,112 +7,136 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Installation Steps
+# VocabX API
+
+## Installation Guide
+
+### Prerequisites
+- PHP 8.0+
+- Composer
+- MySQL/MariaDB
+
+---
+
+### 1. Install Dependencies
 ```bash
 composer install
 ```
 
-Create `.env` file:
+### 2. Environment Configuration
+Copy environment file:
 ```bash
 cp .env.example .env
 ```
-Edit the `.env` file and setup the MySQL connection:
+
+Configure database settings using your preferred text editor:
 ```bash
-vim .env
-```
-Edit the App URL and port:
-```yaml
-    ...
-    APP_URL=http://localhost:8000
-    ....
-```
-Edit the MySQL configs
-```yaml
-    ...
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=vocabx_api
-    DB_USERNAME=<USERNAME>
-    DB_PASSWORD=<PASSWORD>
-    ...
-```
-Generate secret key:
-```bash
-php artisan key:generate
+# Using nano
+nano .env
+
+# Or using any other editor of your choice
 ```
 
-Generate JWT Token secret key:
+Required configuration:
+```env
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name  #vocabx_api for default
+DB_USERNAME=your_mysql_username #root for default
+DB_PASSWORD=your_mysql_password
+```
+
+### 3. Generate Application Keys
 ```bash
+php artisan key:generate
 php artisan jwt:secret
 ```
 
-Create symbolic link:
+### 4. Database Setup
+Create database (if not existing):
+```bash
+php artisan db:create  # If using Laravel 8+
+```
+
+Run migrations:
+```bash
+php artisan migrate
+```
+
+**Note:** If the database doesn't exist, the migrate command will prompt you to create it.
+
+### 5. Storage Configuration
 ```bash
 php artisan storage:link
 ```
 
-It's done! Now run the app:
+### 6. Database Seeding (Optional)
+Seed all tables:
+```bash
+php artisan db:seed
+```
+
+Seed specific tables:
+```bash
+php artisan db:seed --class=UserSeeder
+php artisan db:seed --class=LanguageSeeder
+```
+
+Reset and reseed database:
+```bash
+php artisan migrate:fresh --seed
+```
+
+### 7. Launch Development Server
 ```bash
 php artisan serve
 ```
 
+---
 
+## Additional Configuration
 
-## About Laravel
+### Mail Setup (Optional - Not in use yet)
+Configure mail settings in `.env` for email functionality:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Troubleshooting
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Common Issues
+1. **Permission Errors**:
+   ```bash
+   chmod -R 775 storage/
+   chmod -R 775 bootstrap/cache/
+   ```
 
-## Learning Laravel
+2. **Configuration Cache**:
+   ```bash
+   php artisan config:clear
+   php artisan cache:clear
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. **Database Connection Issues**:
+   - Verify MySQL service is running
+   - Double-check `.env` credentials
+   - Ensure database user has proper privileges
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Production Deployment
+For production environments:
+- Set `APP_ENV=production` in `.env`
+- Disable debug mode: `APP_DEBUG=false`
+- Configure proper webserver (Nginx/Apache)
+- Set up process manager for queue workers
