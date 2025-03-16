@@ -111,60 +111,66 @@ class WordController extends Controller
         $request->validate([
             'file' => 'required|file|mimes:json',
         ]);
-
+    
         $file = $request->file('file');
         $data = json_decode(file_get_contents($file->getRealPath()), true);
-
+    
         $importedCount = 0;
         $duplicateCount = 0;
         $errorCount = 0;
         $passedCount = 0;
-
+        $errorMessages = [];
+    
         foreach ($data as $wordData) {
             try {
                 $wordData['user_id'] = Auth::id();
                 $translations = $wordData['translations'] ?? [];
                 $sentences = $wordData['sentences'] ?? [];
-
+    
                 unset($wordData['translations'], $wordData['sentences']);
-
+    
                 // Check for duplicate word
                 $existingWord = Word::where('user_id', $wordData['user_id'])
                     ->where('word', $wordData['word'])
                     ->where('language_code', $wordData['language_code'])
                     ->first();
-
+    
                 if ($existingWord) {
                     $duplicateCount++;
                     continue;
                 }
-
+    
                 $word = Word::create($wordData);
                 $importedCount++;
-
+    
                 foreach ($translations as $translationData) {
                     $translationData['word_id'] = $word->id;
                     Translation::create($translationData);
                 }
-
+    
                 foreach ($sentences as $sentenceData) {
                     $sentenceData['word_id'] = $word->id;
                     Sentence::create($sentenceData);
                 }
             } catch (\Exception $e) {
                 $errorCount++;
+                $errorMessages[] = [
+                    'word' => $wordData['word'] ?? 'N/A',
+                    'error' => $e->getMessage()
+                ];
                 continue;
             }
         }
-
+    
         $passedCount = count($data) - ($importedCount + $duplicateCount + $errorCount);
-
+    
         return response()->json([
             'message' => 'Import process completed',
             'imported' => $importedCount,
             'duplicates' => $duplicateCount,
             'errors' => $errorCount,
             'passed' => $passedCount,
+            'errorMessages' => $errorMessages,
         ], Response::HTTP_CREATED);
     }
 
