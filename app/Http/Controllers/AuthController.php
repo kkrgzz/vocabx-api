@@ -37,12 +37,12 @@ class AuthController extends Controller
             'password' => bcrypt(request()->password),
         ]);
 
-        // $user = new User;
-        // $user->name = request()->name;
-        // $user->email = request()->email;
-        // $user->password = bcrypt(request()->password);
-        // $user->save();
+        // Login the user and return the token
+        $credentials = request(['email', 'password']);
+        $token = Auth::attempt($credentials);
+        $user['serviceToken'] = $token;
 
+        // Create a user profile
         UserProfile::create([
             'user_id' => $user->id,
             'first_name' => null,
