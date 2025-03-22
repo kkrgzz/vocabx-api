@@ -11,121 +11,127 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     /**
-     *  TUTORIAL DOCUMENT: https://www.binaryboxtuts.com/php-tutorials/laravel-11-json-web-tokenjwt-authentication/
-     */
-
-    /**
-     * Register a User.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * Register a User
      */
     public function register(): JsonResponse
     {
         $validator = Validator::make(request()->all(), [
-            'username' => 'required',
+            'username' => 'required|min:3|max:20',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:8',
+            'password' => 'required|confirmed|min:8|max:30',
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json([
+                'code' => 'auth.register.validation_failed',
+                'message' => 'Registration validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        $user = User::create([
-            'username' => request()->username,
-            'email' => request()->email,
-            'password' => bcrypt(request()->password),
-        ]);
+        try {
+            $user = User::create([
+                'username' => request()->username,
+                'email' => request()->email,
+                'password' => bcrypt(request()->password),
+            ]);
 
-        // Login the user and return the token
-        $credentials = request(['email', 'password']);
-        $token = Auth::attempt($credentials);
-        $user['serviceToken'] = $token;
+            UserProfile::create(['user_id' => $user->id]);
 
-        // Create a user profile
-        UserProfile::create([
-            'user_id' => $user->id,
-            'first_name' => null,
-            'last_name' => null,
-            'profile_image' => null,
-            'mother_language' => null,
-            'target_language' => null,
-            'api_key' => null,
-            'preferred_model_id' => null,
-        ]);
+            $token = Auth::attempt(request(['email', 'password']));
 
-        return response()->json($user, 201);
+            return $this->respondWithToken($token);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 'auth.register.failed',
+                'message' => 'Account creation failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
-
     /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * User Login
      */
-    public function login()
+    public function login(): JsonResponse
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json([
+                'code' => 'auth.login.invalid_credentials',
+                'message' => 'Invalid email or password'
+            ], 401);
         }
 
         return $this->respondWithToken($token);
     }
 
     /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * Get Authenticated User
      */
-    public function me()
+    public function me(): JsonResponse
     {
-        $user = Auth::user()->load('profile');
+        try {
+            $user = Auth::user()->load('profile');
+            return response()->json(['user' => $user]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 'auth.session.invalid',
+                'message' => 'Invalid or expired session'
+            ], 401);
+        }
+    }
 
+    /**
+     * Logout User
+     */
+    public function logout(): JsonResponse
+    {
+        try {
+            Auth::logout();
+            return response()->json([
+                'code' => 'auth.logout.success',
+                'message' => 'Successfully logged out'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 'auth.logout.failed',
+                'message' => 'Logout failed'
+            ], 500);
+        }
+    }
+
+    /**
+     * Refresh Token
+     */
+    public function refresh(): JsonResponse
+    {
+        try {
+            return $this->respondWithToken(Auth::refresh());
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 'auth.token.refresh_failed',
+                'message' => 'Token refresh failed'
+            ], 401);
+        }
+    }
+
+    /**
+     * Standardized Token Response
+     */
+    protected function respondWithToken(string $token): JsonResponse
+    {
         return response()->json([
-            'user' => $user,
-        ]);
-    }
-
-    /**
-     * Log the user out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function logout()
-    {
-        Auth::logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function refresh()
-    {
-        return $this->respondWithToken(Auth::refresh());
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        $user = Auth::user();
-
-        return response()->json([
+            'code' => 'auth.token.generated',
             'serviceToken' => $token,
             'token_type' => 'bearer',
             'expires_in' => Auth::factory()->getTTL() * 60,
-            'user' => $user,
+            'user' => Auth::user()->load('profile')
         ]);
     }
 }
