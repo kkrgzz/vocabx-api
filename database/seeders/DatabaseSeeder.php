@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(WordSeeder::class);
         $this->call(TranslationSeeder::class);
         $this->call(SentenceSeeder::class);
+        $this->call(UserProfileSeeder::class);
     }
 }
