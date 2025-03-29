@@ -8,6 +8,9 @@
 </p>
 
 # VocabX API
+Hello! You can use two different installation of VocabX API. One is manual and the other is with Docker. You can follow the links given below:
+[Manual Installation Guide](#installation-guide)
+[Installation Guide with Docker](#install--run-the-app-with-docker) 
 
 ## Installation Guide
 
