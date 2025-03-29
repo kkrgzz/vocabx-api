@@ -178,6 +178,10 @@ If you want to use bare docker commands:
 ```bash
 sudo docker exec <app_name> php artisan key:generate
 ``` 
+and 
+```bash
+sudo docker exec <app_name> php artisan jwt:secret
+``` 
 
 Or, if you want to use makefile commands:
 ```bash
