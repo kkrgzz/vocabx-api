@@ -109,8 +109,101 @@ MAIL_USERNAME=null
 MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 ```
+---
+
+## Install & Run the app with Docker:
+Docker deployment of VocabX API application. You can follow the steps and run the api with docker.
+
+### Prerequisites
+- Docker
+- Docker Compose
+
+### Clone the App
+First of all, you should clone the application:
+```bash
+git clone https://github.com/kkrgzz/vocabx-api.git
+```
+After clone is done, you can enter the directory with:
+```bash
+cd vocabx-api
+```
+
+### Prepare the .env File 
+For security reasons, you should prepare your `.env` file. But, you cannot see the `.env` file in the main directory when you just clone the app. So, you should copy the `.env.example` file as `.env` file and start to edit. Here is how to copy the file on a terminal (also you can just do the copy & past on your desktop environment GUI):
+```bash
+cp .env.example .env
+```
+And, done. Now start to edit the `.env` file. We don't have to change lots of things. We can just change the database related fields however we want.
+
+```env
+DB_DATABASE=vocabx_api_db
+DB_USERNAME=vocabx_api_user
+DB_PASSWORD=vocabx_api_user_password
+MYSQL_ROOT_PASSWORD=vocabx_api_root_password
+```
+
+You can change the vocabx_api_db, vocabx_api_user, vocabx_api_user_password, vocabx_api_root_password fields as you wish. Here is an example:
+
+```env
+DB_DATABASE=vocabx_db
+DB_USERNAME=vocabx_admin
+DB_PASSWORD=Mikasa.Ackerman123
+MYSQL_ROOT_PASSWORD=fI+Ovr!H4X05
+```
+Change the related fields as you wish.
+
+If your `.env` file is ready-to-go, we can continue to setup the application. the next step is running the docker-compose file. 
 
 ---
+
+### Run the Docker Compose
+To run the docker-compose you can use the `Makefile` commands. Lets start with up the docker with the following command:
+
+#### Up the Docker
+If you want to use bare docker commands:
+```bash
+sudo docker-compose up -d --build
+``` 
+
+Or, if you want to use makefile commands:
+```bash
+sudo make up
+```
+
+#### Generate Key & JWT Token
+If you want to use bare docker commands:
+```bash
+sudo docker exec <app_name> php artisan key:generate
+``` 
+
+Or, if you want to use makefile commands:
+```bash
+sudo make keygen
+```
+
+#### Run Migrations
+If you want to use bare docker commands:
+```bash
+sudo docker exec <app_name> php artisan migrate
+``` 
+
+Or, if you want to use makefile commands:
+```bash
+sudo make migration
+```
+
+#### Set the Storage Link
+If you want to use bare docker commands:
+```bash
+sudo docker exec <app_name> php artisan storage:link
+``` 
+
+Or, if you want to use makefile commands:
+```bash
+sudo make storage
+```
+#### Done!
+The deployment is done. Now you can check the application on a web-browser with the following URL: http://localhost:8080
 
 ## Troubleshooting
 
