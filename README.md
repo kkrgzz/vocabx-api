@@ -81,7 +81,6 @@ php artisan db:seed
 Seed specific tables:
 ```bash
 php artisan db:seed --class=UserSeeder
-php artisan db:seed --class=LanguageSeeder
 ```
 
 Reset and reseed database:
