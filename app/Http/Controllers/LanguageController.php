@@ -15,7 +15,7 @@ class LanguageController extends Controller
      */
     public function index(): JsonResponse
     {
-        $languages = Language::all();
+        $languages = Language::orderBy('sort_order')->get();
         return response()->json($languages);
     }
 

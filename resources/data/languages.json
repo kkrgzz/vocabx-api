@@ -1,0 +1,22 @@
+[
+    {"name": "Turkish", "code": "tr"},
+    {"name": "English", "code": "en"},
+    {"name": "German", "code": "de"},
+    {"name": "French", "code": "fr"},
+    {"name": "Italian", "code": "it"},
+    {"name": "Spanish", "code": "es"},
+    {"name": "Russian", "code": "ru"},
+    {"name": "Japanese", "code": "ja"},
+    {"name": "Korean", "code": "ko"},
+    {"name": "Chinese (Simplified)", "code": "zh-CN"},
+    {"name": "Portuguese", "code": "pt"},
+    {"name": "Arabic", "code": "ar"},
+    {"name": "Dutch", "code": "nl"},
+    {"name": "Swedish", "code": "sv"},
+    {"name": "Polish", "code": "pl"},
+    {"name": "Hindi", "code": "hi"},
+    {"name": "Hebrew", "code": "he"},
+    {"name": "Greek", "code": "el"},
+    {"name": "Thai", "code": "th"},
+    {"name": "Vietnamese", "code": "vi"}
+  ]

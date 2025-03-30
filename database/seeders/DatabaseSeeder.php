@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
         //call language seeder
         $this->call(UserSeeder::class);
-        $this->call(LanguageSeeder::class);
+        //$this->call(LanguageSeeder::class);
         $this->call(WordSeeder::class);
         $this->call(TranslationSeeder::class);
         $this->call(SentenceSeeder::class);
