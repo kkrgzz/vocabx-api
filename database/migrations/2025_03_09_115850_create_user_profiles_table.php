@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('profile_image')->nullable();
             $table->string('mother_language')->nullable();
             $table->string('target_language')->nullable();
+            $table->boolean('is_ai_assistant_enabled')->default(0);
             $table->string('api_key')->nullable();
             $table->string('preferred_model_id')->nullable();
             $table->timestamps();
