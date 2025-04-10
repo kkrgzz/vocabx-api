@@ -13,6 +13,11 @@ class Sentence extends Model
     protected $fillable = [
         'word_id',
         'sentence',
+        'is_ai_generated',
+        'ai_review',
+        'ai_elapsed_time',
+        'ai_prompt_tokens',
+        'ai_completion_tokens',
     ];
 
     public function word()

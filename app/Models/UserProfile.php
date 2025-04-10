@@ -17,6 +17,7 @@ class UserProfile extends Model
         'profile_image',
         'mother_language',
         'target_language',
+        'is_ai_assistant_enabled',
         'api_key',
         'preferred_model_id',
     ];
