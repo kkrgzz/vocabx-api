@@ -27,6 +27,7 @@ class UpdateUserProfileRequest extends FormRequest
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'mother_language' => 'nullable|string|max:255',
             'target_language' => 'nullable|string|max:255',
+            'is_ai_assistant_enabled' => 'nullable|boolean',
             'api_key' => 'nullable|string|max:255',
             'preferred_model_id' => 'nullable|string|max:255',
         ];
