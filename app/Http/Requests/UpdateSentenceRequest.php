@@ -22,7 +22,7 @@ class UpdateSentenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sentence'                => 'required_without:sentences|string|max:1000',
+            'sentence'                => 'sometimes|string|max:1000',
             'is_ai_generated'         => 'sometimes|boolean',
             'ai_review'               => 'sometimes|string',
             'ai_elapsed_time'         => 'sometimes|numeric',
