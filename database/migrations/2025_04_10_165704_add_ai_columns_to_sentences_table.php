@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('sentences', function (Blueprint $table) {
             $table->boolean('is_ai_generated')->default(0)->after('sentence');
-            $table->string('ai_review', 1000)->nullable()->after('is_ai_generated');
+            $table->string('ai_review', 10000)->nullable()->after('is_ai_generated');
             $table->decimal('ai_elapsed_time', 10, 2)->nullable()->after('ai_review');
             $table->unsignedInteger('ai_prompt_tokens')->nullable()->after('ai_elapsed_time');
             $table->unsignedInteger('ai_completion_tokens')->nullable()->after('ai_prompt_tokens');
