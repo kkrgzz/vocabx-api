@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('target_language')->nullable();
             $table->boolean('is_ai_assistant_enabled')->default(0)->nullable();
             $table->string('api_key')->nullable();
+            $table->string('api_salt')->nullable();
+            $table->string('api_iv')->nullable();
             $table->string('preferred_model_id')->nullable();
             $table->timestamps();
         });

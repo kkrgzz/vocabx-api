@@ -19,6 +19,8 @@ class UserProfile extends Model
         'target_language',
         'is_ai_assistant_enabled',
         'api_key',
+        'api_salt',
+        'api_iv',
         'preferred_model_id',
     ];
 

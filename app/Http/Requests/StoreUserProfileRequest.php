@@ -28,7 +28,9 @@ class StoreUserProfileRequest extends FormRequest
             'mother_language' => 'nullable|string|max:255',
             'target_language' => 'nullable|string|max:255',
             'is_ai_assistant_enabled' => 'nullable|boolean',
-            'api_key' => 'nullable|string|max:255',
+            'api_key' => 'nullable|string',
+            'api_salt' => 'nullable|string',
+            'api_iv' => 'nullable|string',
             'preferred_model_id' => 'nullable|string|max:255',
         ];
     }
