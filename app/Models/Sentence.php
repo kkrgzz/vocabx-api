@@ -13,6 +13,8 @@ class Sentence extends Model
     protected $fillable = [
         'word_id',
         'sentence',
+        'is_tatoeba_imported',
+        'tatoeba_id',
         'is_ai_generated',
         'ai_review',
         'ai_elapsed_time',

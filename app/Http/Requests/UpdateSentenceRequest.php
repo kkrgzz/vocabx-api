@@ -23,19 +23,23 @@ class UpdateSentenceRequest extends FormRequest
     {
         return [
             'sentence'                => 'sometimes|string|max:1000',
+            'is_tatoeba_imported'     => 'sometimes|boolean',
+            'tatoeba_id'              => 'sometimes|integer|nullable',
             'is_ai_generated'         => 'sometimes|boolean',
-            'ai_review'               => 'sometimes|string',
-            'ai_elapsed_time'         => 'sometimes|numeric',
-            'ai_prompt_tokens'        => 'sometimes|integer',
-            'ai_completion_tokens'    => 'sometimes|integer',
+            'ai_review'               => 'sometimes|string|nullable',
+            'ai_elapsed_time'         => 'sometimes|numeric|nullable',
+            'ai_prompt_tokens'        => 'sometimes|integer|nullable',
+            'ai_completion_tokens'    => 'sometimes|integer|nullable',
             'sentences'               => 'sometimes|array',
             'sentences.*.id'          => 'required_with:sentences|exists:sentences,id',
             'sentences.*.sentence'    => 'required_with:sentences|string|max:1000',
+            'sentences.*.is_tatoeba_imported' => 'sometimes|boolean',
+            'sentences.*.tatoeba_id'  => 'sometimes|integer|nullable',
             'sentences.*.is_ai_generated'      => 'sometimes|boolean',
-            'sentences.*.ai_review'   => 'sometimes|string',
-            'sentences.*.ai_elapsed_time'      => 'sometimes|numeric',
-            'sentences.*.ai_prompt_tokens'     => 'sometimes|integer',
-            'sentences.*.ai_completion_tokens' => 'sometimes|integer',
+            'sentences.*.ai_review'   => 'sometimes|string|nullable',
+            'sentences.*.ai_elapsed_time'      => 'sometimes|numeric|nullable',
+            'sentences.*.ai_prompt_tokens'     => 'sometimes|integer|nullable',
+            'sentences.*.ai_completion_tokens' => 'sometimes|integer|nullable',
         ];
     }
 }
